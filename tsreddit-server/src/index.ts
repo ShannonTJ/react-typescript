@@ -12,8 +12,19 @@ import Redis from "ioredis";
 import session from "express-session";
 import connectRedis from "connect-redis";
 import cors from "cors";
+import { createConnection } from "typeorm";
 
 const main = async () => {
+  const conn = await createConnection({
+    type: "postgres",
+    database: "tsreddit2",
+    username: "postgres",
+    password: "postgres",
+    logging: true,
+    synchronize: true,
+    entities: [],
+  });
+
   const orm = await MikroORM.init(microConfig);
   await orm.getMigrator().up(); //run migrations
 
