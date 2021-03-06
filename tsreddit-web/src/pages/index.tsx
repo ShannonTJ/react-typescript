@@ -2,18 +2,35 @@ import { withUrqlClient } from "next-urql";
 import { createUrqlClient } from "../utils/createUrqlClient";
 import { usePostsQuery } from "../generated/graphql";
 import { Layout } from "../components/Layout";
-import { Box, Heading, Link, Stack, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Flex,
+  Heading,
+  Link,
+  Stack,
+  Text,
+} from "@chakra-ui/react";
 import NextLink from "next/link";
 
 const Index = () => {
-  const [{ data }] = usePostsQuery({ variables: { limit: 10 } });
+  const [{ data, fetching }] = usePostsQuery({ variables: { limit: 10 } });
+
+  //finished loading and you didn't get any data
+  if (!fetching && !data) {
+    return <div>Something went wrong.</div>;
+  }
+
   return (
     <Layout>
-      <NextLink href="/create-post">
-        <Link>Create Post</Link>
-      </NextLink>
+      <Flex align="center">
+        <Heading>TS Reddit</Heading>
+        <NextLink href="/create-post">
+          <Link ml="auto">create post</Link>
+        </NextLink>
+      </Flex>
       <div color="white">hello world</div> <br />
-      {!data ? (
+      {fetching && !data ? (
         <div>loading...</div>
       ) : (
         <Stack spacing={8}>
@@ -25,6 +42,13 @@ const Index = () => {
           ))}
         </Stack>
       )}
+      {data ? (
+        <Flex>
+          <Button isLoading={fetching} m="auto" my={6}>
+            load more
+          </Button>
+        </Flex>
+      ) : null}
     </Layout>
   );
 };
