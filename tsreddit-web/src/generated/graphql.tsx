@@ -240,7 +240,7 @@ export type PostsQuery = (
   { __typename?: 'Query' }
   & { posts: Array<(
     { __typename?: 'Post' }
-    & Pick<Post, 'title' | 'createdAt' | 'updatedAt' | 'id'>
+    & Pick<Post, 'title' | 'text' | 'createdAt' | 'updatedAt' | 'id'>
   )> }
 );
 
@@ -350,6 +350,7 @@ export const PostsDocument = gql`
     query Posts($limit: Int!, $cursor: String) {
   posts(cursor: $cursor, limit: $limit) {
     title
+    text
     createdAt
     updatedAt
     id
