@@ -7,6 +7,7 @@ import {
   Button,
   Flex,
   Heading,
+  Icon,
   Link,
   Stack,
   Text,
@@ -40,11 +41,23 @@ const Index = () => {
       ) : (
         <Stack spacing={8}>
           {data!.posts.posts.map((p) => (
-            <Box key={p.id} p={5} shadow="md" borderWidth="1px">
-              <Heading fontSize="xl">{p.title}</Heading>
-              <Text>posted by: {p.creator.username}</Text>
-              <Text mt={4}>{p.textSnippet}...</Text>
-            </Box>
+            <Flex key={p.id} p={5} shadow="md" borderWidth="1px">
+              <Flex
+                direction="column"
+                justifyContent="center"
+                alignItems="center"
+                mr={4}
+              >
+                <Icon name="chevron-up" size="24px" />
+                {p.points}
+                <Icon name="chevron-down" size="24px" />
+              </Flex>
+              <Box>
+                <Heading fontSize="xl">{p.title}</Heading>
+                <Text>posted by: {p.creator.username}</Text>
+                <Text mt={4}>{p.textSnippet}...</Text>
+              </Box>
+            </Flex>
           ))}
         </Stack>
       )}
