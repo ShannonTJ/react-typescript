@@ -8,6 +8,7 @@ import {
   BaseEntity,
   OneToMany,
 } from "typeorm";
+import { Like } from "./Like";
 import { Post } from "./Post";
 
 @ObjectType()
@@ -38,4 +39,7 @@ export class User extends BaseEntity {
 
   @OneToMany(() => Post, (post) => post.creator)
   posts: Post[];
+
+  @OneToMany(() => Like, (like) => like.user)
+  likes: Like[];
 }

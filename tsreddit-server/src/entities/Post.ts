@@ -7,7 +7,9 @@ import {
   UpdateDateColumn,
   BaseEntity,
   ManyToOne,
+  OneToMany,
 } from "typeorm";
+import { Like } from "./Like";
 import { User } from "./User";
 
 @ObjectType()
@@ -44,4 +46,7 @@ export class Post extends BaseEntity {
   @Field()
   @ManyToOne(() => User, (user) => user.posts)
   creator: User;
+
+  @OneToMany(() => Like, (like) => like.post)
+  likes: Like[];
 }
