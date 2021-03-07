@@ -9,23 +9,30 @@ interface LikeSectionProps {
 }
 
 export const LikeSection: React.FC<LikeSectionProps> = ({ post }) => {
-  const [{ fetching, operation }, vote] = useVoteMutation();
+  const [loadingState, setLoadingState] = useState<
+    "like-loading" | "unlike-loading" | "not-loading"
+  >("not-loading");
+  const [, vote] = useVoteMutation();
   return (
     <Flex direction="column" justifyContent="center" alignItems="center" mr={4}>
       <IconButton
         onClick={async () => {
+          setLoadingState("like-loading");
           await vote({ postId: post.id, value: 1 });
+          setLoadingState("not-loading");
         }}
-        isLoading={fetching && operation?.variables?.value === 1}
+        isLoading={loadingState === "like-loading"}
         aria-label="like post"
         icon={<ChevronUpIcon />}
       />
       {post.points}
       <IconButton
         onClick={async () => {
+          setLoadingState("unlike-loading");
           await vote({ postId: post.id, value: -1 });
+          setLoadingState("not-loading");
         }}
-        isLoading={fetching && operation?.variables?.value === -1}
+        isLoading={loadingState === "unlike-loading"}
         aria-label="unlike post"
         icon={<ChevronDownIcon />}
       />
