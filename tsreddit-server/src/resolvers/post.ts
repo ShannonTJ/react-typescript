@@ -16,7 +16,6 @@ import {
 } from "type-graphql";
 import { Post } from "../entities/Post";
 import { getConnection } from "typeorm";
-import { Like } from "../entities/Like";
 
 @InputType()
 class PostInput {
@@ -95,14 +94,12 @@ export class PostResolver {
     json_build_object(
       'id', u.id,
       'username',  u.username,
-      'email', u.email,
-      'createdAt', u.'createdAt',
-      'updatedAt', u.'updatedAt'
+      'email', u.email
       ) creator 
     from post p
-    inner join public.user u on u.id = p.'creatorId'
-    ${cursor ? `where p.'createdAt' < $2` : ""}
-    order by p.'createdAt' DESC
+    inner join public.user u on u.id = p."creatorId"
+    ${cursor ? `where p."createdAt" < $2` : ""}
+    order by p."createdAt" DESC
     limit $1
     `,
       replacements

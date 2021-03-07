@@ -16,7 +16,7 @@ import { useState } from "react";
 
 const Index = () => {
   const [variables, setVariables] = useState({
-    limit: 33,
+    limit: 15,
     cursor: null as null | string,
   });
   const [{ data, fetching }] = usePostsQuery({ variables });
@@ -29,12 +29,12 @@ const Index = () => {
   return (
     <Layout>
       <Flex align="center">
-        <Heading>TS Reddit</Heading>
+        <Heading mb={6}>TS Reddit</Heading>
         <NextLink href="/create-post">
           <Link ml="auto">create post</Link>
         </NextLink>
       </Flex>
-      <div color="white">hello world</div> <br />
+
       {fetching && !data ? (
         <div>loading...</div>
       ) : (
@@ -42,6 +42,7 @@ const Index = () => {
           {data!.posts.posts.map((p) => (
             <Box key={p.id} p={5} shadow="md" borderWidth="1px">
               <Heading fontSize="xl">{p.title}</Heading>
+              <Text>posted by: {p.creator.username}</Text>
               <Text mt={4}>{p.textSnippet}...</Text>
             </Box>
           ))}
