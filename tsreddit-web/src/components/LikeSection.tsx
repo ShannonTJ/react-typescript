@@ -17,10 +17,14 @@ export const LikeSection: React.FC<LikeSectionProps> = ({ post }) => {
     <Flex direction="column" justifyContent="center" alignItems="center" mr={4}>
       <IconButton
         onClick={async () => {
+          if (post.voteStatus === 1) {
+            return;
+          }
           setLoadingState("like-loading");
           await vote({ postId: post.id, value: 1 });
           setLoadingState("not-loading");
         }}
+        colorScheme={post.voteStatus === 1 ? "green" : undefined}
         isLoading={loadingState === "like-loading"}
         aria-label="like post"
         icon={<ChevronUpIcon />}
@@ -28,10 +32,14 @@ export const LikeSection: React.FC<LikeSectionProps> = ({ post }) => {
       {post.points}
       <IconButton
         onClick={async () => {
+          if (post.voteStatus === -1) {
+            return;
+          }
           setLoadingState("unlike-loading");
           await vote({ postId: post.id, value: -1 });
           setLoadingState("not-loading");
         }}
+        colorScheme={post.voteStatus === -1 ? "red" : undefined}
         isLoading={loadingState === "unlike-loading"}
         aria-label="unlike post"
         icon={<ChevronDownIcon />}
