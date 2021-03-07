@@ -16,6 +16,7 @@ import {
 } from "type-graphql";
 import { Post } from "../entities/Post";
 import { getConnection } from "typeorm";
+import { Like } from "../entities/Like";
 
 @InputType()
 class PostInput {
@@ -53,23 +54,52 @@ export class PostResolver {
     const finalValue = isLiked ? 1 : -1;
     const { userId } = req.session;
 
-    // await Like.insert({
-    //   userId,
-    //   postId,
-    //   value: finalValue,
-    // });
+    const like = await Like.findOne({ where: { postId, userId } });
 
-    await getConnection().query(
-      `
-    START TRANSACTION;
-    insert into like ("userId, "postId", "value")
-    values (${userId}, ${postId}, ${finalValue});
-    update post
-    set points = points + ${finalValue}
-    where id = ${postId};
-    COMMIT;
-    `
-    );
+    //user has liked the post before
+    //and they are changing their vote
+    if (like && like.value !== finalValue) {
+      await getConnection().transaction(async (tm) => {
+        await tm.query(
+          `
+              update like
+              set value = $1 
+              where "postId" = $2 and "userId" = $3
+              `,
+          [finalValue, postId, userId]
+        );
+
+        await tm.query(
+          `
+                update post
+                set points = points + $1
+                where id = $2
+              `,
+          [2 * finalValue, postId]
+        );
+      });
+    }
+    //user has not liked the post before
+    else if (!like) {
+      await getConnection().transaction(async (tm) => {
+        await tm.query(
+          `
+        insert into like ("userId", "postId", value)
+        values ($1, $2, $3)
+        `,
+          [userId, postId, finalValue]
+        );
+
+        await tm.query(
+          `
+        update post
+        set points = points + $1 
+        where id = $2
+        `,
+          [finalValue, postId]
+        );
+      });
+    }
 
     return true;
   }
