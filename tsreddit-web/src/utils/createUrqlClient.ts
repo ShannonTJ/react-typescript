@@ -146,11 +146,12 @@ export const createUrqlClient = (ssrExchange: any) => ({
                 fragment _ on Post {
                   id
                   points
-                  voteStatus
                 }
               `,
               { id: postId } as any
             );
+
+            console.log(data.points);
 
             if (data) {
               const newPoints = (data.points as number) + value;
