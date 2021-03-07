@@ -9,7 +9,7 @@ import {
   ManyToOne,
   OneToMany,
 } from "typeorm";
-import { Like } from "./Like";
+import { Postlike } from "./Postlike";
 import { User } from "./User";
 
 @ObjectType()
@@ -47,6 +47,6 @@ export class Post extends BaseEntity {
   @ManyToOne(() => User, (user) => user.posts)
   creator: User;
 
-  @OneToMany(() => Like, (like) => like.post)
-  likes: Like[];
+  @OneToMany(() => Postlike, (like) => like.post)
+  likes: Postlike[];
 }

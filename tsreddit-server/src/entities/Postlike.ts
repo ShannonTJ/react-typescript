@@ -9,7 +9,7 @@ import { User } from "./User";
 
 @ObjectType()
 @Entity()
-export class Like extends BaseEntity {
+export class Postlike extends BaseEntity {
   @Column({ type: "int" })
   value: number;
 
