@@ -7,15 +7,13 @@ import {
   Button,
   Flex,
   Heading,
-  Icon,
-  IconButton,
   Link,
   Stack,
   Text,
 } from "@chakra-ui/react";
 import NextLink from "next/link";
 import { useState } from "react";
-import { ChevronDownIcon, ChevronUpIcon } from "@chakra-ui/icons";
+import { LikeSection } from "../components/LikeSection";
 
 const Index = () => {
   const [variables, setVariables] = useState({
@@ -44,19 +42,7 @@ const Index = () => {
         <Stack spacing={8}>
           {data!.posts.posts.map((p) => (
             <Flex key={p.id} p={5} shadow="md" borderWidth="1px">
-              <Flex
-                direction="column"
-                justifyContent="center"
-                alignItems="center"
-                mr={4}
-              >
-                <IconButton aria-label="like post" icon={<ChevronUpIcon />} />
-                {p.points}
-                <IconButton
-                  aria-label="unlike post"
-                  icon={<ChevronDownIcon />}
-                />
-              </Flex>
+              <LikeSection post={p} />
               <Box>
                 <Heading fontSize="xl">{p.title}</Heading>
                 <Text>posted by: {p.creator.username}</Text>

@@ -1,17 +1,17 @@
 import { ChevronUpIcon, ChevronDownIcon } from "@chakra-ui/icons";
 import { Flex, IconButton } from "@chakra-ui/react";
 import React from "react";
-import { PostsQuery } from "../generated/graphql";
+import { PostSnippetFragment } from "../generated/graphql";
 
 interface LikeSectionProps {
-  post: PostsQuery["posts"]["posts"][0];
+  post: PostSnippetFragment;
 }
 
-export const LikeSection: React.FC<LikeSectionProps> = ({}) => {
+export const LikeSection: React.FC<LikeSectionProps> = ({ post }) => {
   return (
     <Flex direction="column" justifyContent="center" alignItems="center" mr={4}>
       <IconButton aria-label="like post" icon={<ChevronUpIcon />} />
-      {p.points}
+      {post.points}
       <IconButton aria-label="unlike post" icon={<ChevronDownIcon />} />
     </Flex>
   );

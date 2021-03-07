@@ -145,6 +145,15 @@ export type ErrorValuesFragment = (
   & Pick<FieldError, 'field' | 'message'>
 );
 
+export type PostSnippetFragment = (
+  { __typename?: 'Post' }
+  & Pick<Post, 'id' | 'createdAt' | 'updatedAt' | 'title' | 'points' | 'textSnippet'>
+  & { creator: (
+    { __typename?: 'User' }
+    & Pick<User, 'id' | 'username'>
+  ) }
+);
+
 export type UserResponseValuesFragment = (
   { __typename?: 'UserResponse' }
   & { errors?: Maybe<Array<(
@@ -257,15 +266,25 @@ export type PostsQuery = (
     & Pick<PaginatedPosts, 'hasMore'>
     & { posts: Array<(
       { __typename?: 'Post' }
-      & Pick<Post, 'title' | 'textSnippet' | 'createdAt' | 'updatedAt' | 'id' | 'points'>
-      & { creator: (
-        { __typename?: 'User' }
-        & Pick<User, 'username' | 'id'>
-      ) }
+      & PostSnippetFragment
     )> }
   ) }
 );
 
+export const PostSnippetFragmentDoc = gql`
+    fragment PostSnippet on Post {
+  id
+  createdAt
+  updatedAt
+  title
+  points
+  textSnippet
+  creator {
+    id
+    username
+  }
+}
+    `;
 export const ErrorValuesFragmentDoc = gql`
     fragment ErrorValues on FieldError {
   field
@@ -373,20 +392,11 @@ export const PostsDocument = gql`
   posts(cursor: $cursor, limit: $limit) {
     hasMore
     posts {
-      title
-      textSnippet
-      createdAt
-      updatedAt
-      id
-      points
-      creator {
-        username
-        id
-      }
+      ...PostSnippet
     }
   }
 }
-    `;
+    ${PostSnippetFragmentDoc}`;
 
 export function usePostsQuery(options: Omit<Urql.UseQueryArgs<PostsQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<PostsQuery>({ query: PostsDocument, ...options });
