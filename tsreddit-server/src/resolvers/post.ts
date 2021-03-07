@@ -54,19 +54,22 @@ export class PostResolver {
     const finalValue = isLiked ? 1 : -1;
     const { userId } = req.session;
 
-    await Like.insert({
-      userId,
-      postId,
-      value: finalValue,
-    });
+    // await Like.insert({
+    //   userId,
+    //   postId,
+    //   value: finalValue,
+    // });
 
     await getConnection().query(
       `
-    update post p
-    set p.points = p.points + $1 
-    where p.id = $2
-    `,
-      [finalValue, postId]
+    START TRANSACTION;
+    insert into like ("userId, "postId", "value")
+    values (${userId}, ${postId}, ${finalValue});
+    update post
+    set points = points + ${finalValue}
+    where id = ${postId};
+    COMMIT;
+    `
     );
 
     return true;
