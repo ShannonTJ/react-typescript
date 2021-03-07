@@ -50,14 +50,10 @@ const Index = () => {
                 alignItems="center"
                 mr={4}
               >
-                <IconButton
-                  aria-label="like post"
-                  icon={<ChevronUpIcon />}
-                  color="white"
-                />
+                <IconButton aria-label="like post" icon={<ChevronUpIcon />} />
                 {p.points}
                 <IconButton
-                  aria-label="unlikepost"
+                  aria-label="unlike post"
                   icon={<ChevronDownIcon />}
                 />
               </Flex>
