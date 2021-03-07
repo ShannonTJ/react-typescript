@@ -151,8 +151,6 @@ export const createUrqlClient = (ssrExchange: any) => ({
               { id: postId } as any
             );
 
-            console.log(data.points);
-
             if (data) {
               const newPoints = (data.points as number) + value;
               cache.writeFragment(
