@@ -14,7 +14,7 @@ export const LikeSection: React.FC<LikeSectionProps> = ({ post }) => {
   >("not-loading");
   const [, vote] = useVoteMutation();
   return (
-    <Flex direction="column" justifyContent="center" alignItems="center" mr={4}>
+    <Flex direction="column" justifyContent="center" alignItems="center" mr={5}>
       <IconButton
         onClick={async () => {
           if (post.voteStatus === 1) {

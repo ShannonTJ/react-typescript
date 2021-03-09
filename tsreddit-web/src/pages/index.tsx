@@ -16,7 +16,7 @@ import {
 import NextLink from "next/link";
 import { useState } from "react";
 import { LikeSection } from "../components/LikeSection";
-import { DeleteIcon } from "@chakra-ui/icons";
+import { DeleteIcon, EditIcon } from "@chakra-ui/icons";
 
 const Index = () => {
   const [variables, setVariables] = useState({
@@ -52,14 +52,24 @@ const Index = () => {
                     <Text flex={1} mt={4}>
                       {p.textSnippet}...
                     </Text>
-                    <IconButton
-                      ml="auto"
-                      onClick={() => {
-                        deletePost({ id: p.id });
-                      }}
-                      aria-label="delete post"
-                      icon={<DeleteIcon />}
-                    />
+                    <Box ml="auto">
+                      <NextLink href="post/edit/[id]" as={`/post/edit/${p.id}`}>
+                        <IconButton
+                          as={Link}
+                          mr={4}
+                          aria-label="edit post"
+                          icon={<EditIcon />}
+                        />
+                      </NextLink>
+
+                      <IconButton
+                        onClick={() => {
+                          deletePost({ id: p.id });
+                        }}
+                        aria-label="delete post"
+                        icon={<DeleteIcon />}
+                      />
+                    </Box>
                   </Flex>
                 </Box>
               </Flex>
