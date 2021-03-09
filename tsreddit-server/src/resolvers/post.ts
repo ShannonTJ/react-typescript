@@ -17,7 +17,6 @@ import {
 import { Post } from "../entities/Post";
 import { getConnection } from "typeorm";
 import { Postlike } from "../entities/Postlike";
-import { resourceLimits } from "worker_threads";
 
 @InputType()
 class PostInput {
