@@ -14,6 +14,7 @@ import { Post } from "./entities/Post";
 import { User } from "./entities/User";
 import { Postlike } from "./entities/Postlike";
 import path from "path";
+import { createUserLoader } from "./utils/createUserLoader";
 
 const main = async () => {
   const conn = await createConnection({
@@ -66,7 +67,12 @@ const main = async () => {
       resolvers: [PostResolver, UserResolver],
       validate: false,
     }),
-    context: ({ req, res }) => ({ req, res, redis }),
+    context: ({ req, res }) => ({
+      req,
+      res,
+      redis,
+      userLoader: createUserLoader(),
+    }),
   });
 
   //create graphql endpoint
