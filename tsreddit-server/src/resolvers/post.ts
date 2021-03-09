@@ -17,6 +17,7 @@ import {
 import { Post } from "../entities/Post";
 import { getConnection } from "typeorm";
 import { Postlike } from "../entities/Postlike";
+import { resourceLimits } from "worker_threads";
 
 @InputType()
 class PostInput {
@@ -183,21 +184,25 @@ export class PostResolver {
   }
 
   @Mutation(() => Post, { nullable: true })
+  @UseMiddleware(isAuth)
   async updatePost(
     @Arg("id") id: number,
     @Arg("title") title: string,
-    @Arg("text") text: string
+    @Arg("text") text: string,
+    @Ctx() { req }: MyContext
   ): Promise<Post | null> {
-    //fetch post
-    const post = await Post.findOne(id);
-    if (!post) {
-      return null;
-    }
-    //update post
-    if (typeof title !== "undefined") {
-      await Post.update({ id }, { title });
-    }
-    return post;
+    const result = await getConnection()
+      .createQueryBuilder()
+      .update(Post)
+      .set({ title, text })
+      .where('id = :id and "creatorId" = :creatorId', {
+        id,
+        creatorId: req.session.userId,
+      })
+      .returning("*")
+      .execute();
+
+    return result.raw[0];
   }
 
   @Mutation(() => Boolean)
