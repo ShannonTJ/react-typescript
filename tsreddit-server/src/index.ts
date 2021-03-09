@@ -15,6 +15,7 @@ import { User } from "./entities/User";
 import { Postlike } from "./entities/Postlike";
 import path from "path";
 import { createUserLoader } from "./utils/createUserLoader";
+import { createPostlikeLoader } from "./utils/createPostlikeLoader";
 
 const main = async () => {
   const conn = await createConnection({
@@ -72,6 +73,7 @@ const main = async () => {
       res,
       redis,
       userLoader: createUserLoader(),
+      postlikeLoader: createPostlikeLoader(),
     }),
   });
 

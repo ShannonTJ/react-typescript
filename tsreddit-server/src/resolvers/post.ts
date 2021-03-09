@@ -46,7 +46,24 @@ export class PostResolver {
 
   @FieldResolver(() => User)
   creator(@Root() post: Post, @Ctx() { userLoader }: MyContext) {
-    return userLoader.load(post.id);
+    return userLoader.load(post.creatorId);
+  }
+
+  @FieldResolver(() => Int, { nullable: true })
+  async voteStatus(
+    @Root() post: Post,
+    @Ctx() { postlikeLoader, req }: MyContext
+  ) {
+    if (!req.session.userId) {
+      return null;
+    }
+
+    const postlike = await postlikeLoader.load({
+      postId: post.id,
+      userId: req.session.userId,
+    });
+
+    return postlike ? postlike.value : null;
   }
 
   @Mutation(() => Boolean)
@@ -114,34 +131,23 @@ export class PostResolver {
   async posts(
     @Arg("limit", () => Int) limit: number,
     @Arg("cursor", () => String, { nullable: true }) cursor: string | null,
-    @Ctx() { req }: MyContext
+    @Ctx() {}: MyContext
   ): Promise<PaginatedPosts> {
     const realLimit = Math.min(50, limit);
     const realLimitPlusOne = realLimit + 1;
 
     const replacements: any[] = [realLimitPlusOne];
 
-    if (req.session.userId) {
-      replacements.push(req.session.userId);
-    }
-
-    let cursorIndex = 3;
     if (cursor) {
       replacements.push(new Date(parseInt(cursor)));
-      cursorIndex = replacements.length;
     }
 
     //get user info with each post
     const posts = await getConnection().query(
       `
-    select p.*, 
-      ${
-        req.session.userId
-          ? '(select value from postlike where "userId" = $2 and "postId" = p.id) "voteStatus"'
-          : 'null as "voteStatus"'
-      }
+    select p.*
     from post p
-    ${cursor ? `where p."createdAt" < $${cursorIndex}` : ""}
+    ${cursor ? `where p."createdAt" < $2` : ""}
     order by p."createdAt" DESC
     limit $1
     `,
