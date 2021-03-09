@@ -10,10 +10,12 @@ import {
   Link,
   Stack,
   Text,
+  IconButton,
 } from "@chakra-ui/react";
 import NextLink from "next/link";
 import { useState } from "react";
 import { LikeSection } from "../components/LikeSection";
+import { DeleteIcon } from "@chakra-ui/icons";
 
 const Index = () => {
   const [variables, setVariables] = useState({
@@ -36,14 +38,24 @@ const Index = () => {
           {data!.posts.posts.map((p) => (
             <Flex key={p.id} p={5} shadow="md" borderWidth="1px">
               <LikeSection post={p} />
-              <Box>
+              <Box flex={1}>
                 <NextLink href="/post/[id]" as={`/post/${p.id}`}>
                   <Link>
                     <Heading fontSize="xl">{p.title}</Heading>
                   </Link>
                 </NextLink>
                 <Text>posted by: {p.creator.username}</Text>
-                <Text mt={4}>{p.textSnippet}...</Text>
+                <Flex align="center">
+                  <Text flex={1} mt={4}>
+                    {p.textSnippet}...
+                  </Text>
+                  <IconButton
+                    ml="auto"
+                    onClick={() => {}}
+                    aria-label="delete post"
+                    icon={<DeleteIcon />}
+                  />
+                </Flex>
               </Box>
             </Flex>
           ))}
