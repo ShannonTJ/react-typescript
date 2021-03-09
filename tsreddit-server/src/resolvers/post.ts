@@ -185,7 +185,8 @@ export class PostResolver {
   @Mutation(() => Post, { nullable: true })
   async updatePost(
     @Arg("id") id: number,
-    @Arg("title", () => String, { nullable: true }) title: string
+    @Arg("title") title: string,
+    @Arg("text") text: string
   ): Promise<Post | null> {
     //fetch post
     const post = await Post.findOne(id);
@@ -205,7 +206,18 @@ export class PostResolver {
     @Arg("id", () => Int) id: number,
     @Ctx() { req }: MyContext
   ): Promise<boolean> {
-    await Post.delete({ id, creatorId: req.session.userId });
+    const post = await Post.findOne(id);
+
+    if (!post) {
+      return false;
+    }
+
+    if (post.creatorId !== req.session.userId) {
+      throw new Error("user is not authorized");
+    }
+
+    await Postlike.delete({ postId: id });
+    await Post.delete({ id });
     return true;
   }
 }

@@ -6,6 +6,7 @@ import {
 } from "urql";
 import { cacheExchange, Resolver } from "@urql/exchange-graphcache";
 import {
+  DeletePostMutationVariables,
   LoginMutation,
   LogoutMutation,
   MeDocument,
@@ -24,7 +25,7 @@ const errorExchange: Exchange = ({ forward }) => (ops$) => {
     forward(ops$),
     tap(({ error }) => {
       if (error) {
-        if (error?.message.includes("not logged in")) {
+        if (error?.message.includes("not authorized")) {
           Router.replace("/login");
         }
       }
@@ -147,6 +148,12 @@ export const createUrqlClient = (ssrExchange: any, ctx: any) => {
         },
         updates: {
           Mutation: {
+            deletePost: (_result, args, cache, info) => {
+              cache.invalidate({
+                __typename: "Post",
+                id: (args as DeletePostMutationVariables).id,
+              });
+            },
             vote: (_result, args, cache, info) => {
               const { postId, value } = args as VoteMutationVariables;
               const data = cache.readFragment(
