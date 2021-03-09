@@ -4,14 +4,20 @@ import { createUrqlClient } from "../../../utils/createUrqlClient";
 import { Layout } from "../../../components/Layout";
 import { Box, Button } from "@chakra-ui/react";
 import { Formik, Form } from "formik";
-import { useRouter } from "next/router";
 import { InputField } from "../../../components/InputField";
 import { Wrapper } from "../../../components/Wrapper";
-import { usePostQuery } from "../../../generated/graphql";
+import { useGetPostFromUrl } from "../../../utils/useGetPostFromUrl";
 
 export const EditPost = ({}) => {
-  const router = useRouter();
-  const [] = usePostQuery({ variables: { id: router } });
+  const [{ data, fetching }] = useGetPostFromUrl();
+
+  if (fetching) {
+    return (
+      <Layout>
+        <div>Loading...</div>
+      </Layout>
+    );
+  }
   return (
     <Layout variant="small">
       <Wrapper variant="small">
